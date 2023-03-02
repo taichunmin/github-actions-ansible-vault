@@ -1,0 +1,31 @@
+name: Test Actions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: generate test file
+        run: |
+          echo 'fake confidential data' > foo.yml
+          pwd
+          ls -al
+      - name: Retrieve original uid and gid
+        id: uid-gid
+        run: |
+          echo "uid=$(id -u)" >> $GITHUB_OUTPUT
+          echo "gid=$(id -g)" >> $GITHUB_OUTPUT
+      - name: encrypt test file
+        uses: docker://taichunmin/github-actions-ansible-vault:latest
+        env:
+          UID: ${{ steps.uid-gid.outputs.uid }}
+          GID: ${{ steps.uid-gid.outputs.gid }}
+        with:
+          vault_key: '1234'
+          command: |
+            ansible-vault encrypt foo.yml
+            chown $UID:$GID foo.yml
+      - name: print dncrypted file
+        run: cat foo.yml
