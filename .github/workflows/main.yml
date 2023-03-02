@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ v1 ]
   workflow_dispatch:
+  schedule:
+    # timezone: UTC, https://crontab.cronhub.io/
+    - cron: '0 20 * * 0'
 
 env:
   DOCKERHUB_IMAGE: taichunmin/github-actions-ansible-vault:latest

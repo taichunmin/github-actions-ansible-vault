@@ -27,7 +27,7 @@ steps:
       UID: ${{ steps.uid-gid.outputs.uid }}
       GID: ${{ steps.uid-gid.outputs.gid }}
     with:
-      vault_key: ${{ secrets.vault_key }}
+      vault_key: ${{ secrets.VAULT_KEY }}
       command: |
         ansible-vault encrypt foo.yml
         chown $UID:$GID foo.yml
