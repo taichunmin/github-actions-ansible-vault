@@ -8,7 +8,7 @@ inputs:
   command:
     description: "Command to execute"
     required: true
-    default: "ansible-vault"
+    default: "ansible-vault --version"
   vault_key:
     description: "Vault key"
     required: true

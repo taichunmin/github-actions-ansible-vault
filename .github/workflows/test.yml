@@ -12,13 +12,13 @@ jobs:
           echo 'fake confidential data' > foo.yml
           pwd
           ls -al
-      - name: Retrieve original uid and gid
+      - name: Retrieve runner uid and gid
         id: uid-gid
         run: |
           echo "uid=$(id -u)" >> $GITHUB_OUTPUT
           echo "gid=$(id -g)" >> $GITHUB_OUTPUT
       - name: encrypt test file
-        uses: docker://taichunmin/github-actions-ansible-vault:latest
+        uses: taichunmin/github-actions-ansible-vault@v1
         env:
           UID: ${{ steps.uid-gid.outputs.uid }}
           GID: ${{ steps.uid-gid.outputs.gid }}
@@ -27,5 +27,17 @@ jobs:
           command: |
             ansible-vault encrypt foo.yml
             chown $UID:$GID foo.yml
-      - name: print dncrypted file
+      - name: print encrypted file
+        run: cat foo.yml
+      - name: decrypt test file
+        uses: taichunmin/github-actions-ansible-vault@v1
+        env:
+          UID: ${{ steps.uid-gid.outputs.uid }}
+          GID: ${{ steps.uid-gid.outputs.gid }}
+        with:
+          vault_key: '1234'
+          command: |
+            ansible-vault decrypt foo.yml
+            chown $UID:$GID foo.yml
+      - name: print decrypted file
         run: cat foo.yml
